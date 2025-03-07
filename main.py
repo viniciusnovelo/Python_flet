@@ -1,73 +1,73 @@
-#importa a biblioteca Flet
+# Import the Flet library
 import flet as ft
 
-# Função principal que inicia o aplicativo
-def main(pagina):
-    # Criando o título da aplicação
+# Main function that starts the application
+def main(page):
+    # Create the application title
     titulo = ft.Text("Hashzap")
-    pagina.add(titulo)  # Adiciona o título à interface
+    page.add(titulo)  # Add the title to the interface
 
-    # Função para enviar mensagem para todos os usuários conectados
-    def enviar_mensagem_tunel(mensagem):
-        texto = ft.Text(mensagem)  # Cria um objeto de texto com a mensagem
-        chat.controls.append(texto)  # Adiciona a mensagem ao chat
-        pagina.update()  # Atualiza a interface para mostrar a nova mensagem
+    # Function to send a message to all connected users
+    def send_message_tunnel(message):
+        text = ft.Text(message)  # Create a text object with the message
+        chat.controls.append(text)  # Add the message to the chat
+        page.update()  # Update the interface to show the new message
 
-    # Inscreve a função no sistema de mensagens do Flet (pubsub)
-    pagina.pubsub.subscribe(enviar_mensagem_tunel)
+    # Subscribe the function to Flet's pubsub messaging system
+    page.pubsub.subscribe(send_message_tunnel)
 
-    # Função chamada ao enviar uma mensagem no chat
-    def enviar_mensagem(evento):
-        nome_user = caixa_nome.value  # Obtém o nome do usuário
-        texto_campo_mensagem = campo_enviar_mensagem.value  # Obtém o texto da mensagem
-        mensagem = f"{nome_user}: {texto_campo_mensagem}"  # Formata a mensagem
-        pagina.pubsub.send_all(mensagem)  # Envia a mensagem para todos os usuários
-        campo_enviar_mensagem.value = ""  # Limpa o campo de entrada de mensagem
-        pagina.update()  # Atualiza a interface
+    # Function called when sending a message in the chat
+    def send_message(event):
+        user_name = name_box.value  # Get the user's name
+        message_text = message_field.value  # Get the message text
+        message = f"{user_name}: {message_text}"  # Format the message
+        page.pubsub.send_all(message)  # Send the message to all users
+        message_field.value = ""  # Clear the message input field
+        page.update()  # Update the interface
 
-    # Cria o campo de entrada de mensagem e o botão de envio
-    campo_enviar_mensagem = ft.TextField(label="Digite aqui sua mensagem")
-    botao_enviar = ft.ElevatedButton("Enviar", on_click=enviar_mensagem)
+    # Create the message input field and the send button
+    message_field = ft.TextField(label="Type your message here")
+    send_button = ft.ElevatedButton("Send", on_click=send_message)
 
-    # Organiza o campo de mensagem e o botão em uma linha horizontal
-    linha_enviar = ft.Row([campo_enviar_mensagem, botao_enviar])
-    chat = ft.Column()  # Área do chat onde as mensagens aparecerão
+    # Organize the message field and the button in a horizontal row
+    send_row = ft.Row([message_field, send_button])
+    chat = ft.Column()  # Chat area where messages will appear
 
-    # Função chamada ao clicar no botão "Entrar no Chat"
-    def entrar_chat(evento):
-        popup.open = False  # Fecha o popup/modal
-        pagina.remove(titulo)  # Remove o título da tela inicial
-        pagina.remove(botao)  # Remove o botão "Iniciar Chat"
+    # Function called when clicking the "Join Chat" button
+    def join_chat(event):
+        popup.open = False  # Close the popup/modal
+        page.remove(titulo)  # Remove the title from the initial screen
+        page.remove(button)  # Remove the "Start Chat" button
         
-        # Adiciona a interface do chat na tela
-        pagina.add(linha_enviar)
-        pagina.add(chat)
+        # Add the chat interface to the screen
+        page.add(send_row)
+        page.add(chat)
         
-        nome_usuario = caixa_nome.value  # Obtém o nome do usuário
+        username = name_box.value  # Get the user's name
 
-        # Envia uma mensagem informando que o usuário entrou no chat
-        mensagem2 = f"{nome_usuario} entrou no chat"
-        pagina.pubsub.send_all(mensagem2)
+        # Send a message informing that the user has joined the chat
+        message2 = f"{username} joined the chat"
+        page.pubsub.send_all(message2)
 
-        pagina.update()  # Atualiza a interface
+        page.update()  # Update the interface
 
-    # Criando o popup/modal de entrada do usuário no chat
-    titulo_popup = ft.Text("Bem vindo ao Hashzap")
-    caixa_nome = ft.TextField(label="Digite o seu nome")  # Campo para inserir o nome
-    botao_popup = ft.ElevatedButton("Entrar no Chat", on_click=entrar_chat)  # Botão para entrar no chat
+    # Create the popup/modal for user entry into the chat
+    popup_title = ft.Text("Welcome to Hashzap")
+    name_box = ft.TextField(label="Enter your name")  # Field to enter the name
+    popup_button = ft.ElevatedButton("Join Chat", on_click=join_chat)  # Button to join the chat
 
-    # Configuração do popup
-    popup = ft.AlertDialog(title=titulo_popup, content=caixa_nome, actions=[botao_popup])
+    # Configure the popup
+    popup = ft.AlertDialog(title=popup_title, content=name_box, actions=[popup_button])
 
-    # Função chamada ao clicar no botão "Iniciar Chat"
-    def abrir_popup(evento):
-        pagina.dialog = popup  # Define o popup/modal na página
-        popup.open = True  # Abre o popup
-        pagina.update()  # Atualiza a interface
+    # Function called when clicking the "Start Chat" button
+    def open_popup(event):
+        page.dialog = popup  # Set the popup/modal on the page
+        popup.open = True  # Open the popup
+        page.update()  # Update the interface
         
-    # Botão inicial para abrir o popup
-    botao = ft.ElevatedButton("Iniciar Chat", on_click=abrir_popup)
-    pagina.add(botao)  # Adiciona o botão na interface inicial
+    # Initial button to open the popup
+    button = ft.ElevatedButton("Start Chat", on_click=open_popup)
+    page.add(button)  # Add the button to the initial interface
 
-# Executa a aplicação no navegador
+# Run the application in the browser
 ft.app(main, view=ft.WEB_BROWSER)
